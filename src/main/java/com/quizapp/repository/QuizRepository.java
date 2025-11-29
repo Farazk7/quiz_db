@@ -1,4 +1,8 @@
 package com.quizapp.repository;
 
-public interface QuizRepository {
+import com.quizapp.entity.Answer;
+import com.quizapp.entity.Quiz;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface QuizRepository extends JpaRepository<Quiz,Long> {
 }

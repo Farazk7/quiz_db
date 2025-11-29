@@ -9,9 +9,11 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-public class QuizResponse {
+public class QuestionResponse {
     private Long id;
-    private String title;
-    private String description;
-    private List<QuestionResponse> questions;
+    private String text;
+    private String type;
+    private Integer points;
+
+    private List<ChoiceResponse> choices; 
 }
