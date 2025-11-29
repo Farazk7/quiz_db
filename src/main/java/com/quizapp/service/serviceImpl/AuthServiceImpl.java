@@ -22,12 +22,13 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public LoginResponse login(LoginRequest request) {
 
-        if (request == null || request.getEmail() == null || request.getPassword() == null) {
-            throw new UnauthorizedException("Invalid email or password");
-        }
-
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new UnauthorizedException("Invalid email or password"));
+
+        // PRINT HASH FROM DB
+        System.out.println("DB HASH = " + user.getPassword());
+        System.out.println("RAW = " + request.getPassword());
+        System.out.println("MATCH = " + passwordEncoder.matches(request.getPassword(), user.getPassword()));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new UnauthorizedException("Invalid email or password");

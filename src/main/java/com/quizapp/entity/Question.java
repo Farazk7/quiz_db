@@ -30,7 +30,7 @@ public class Question {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String text;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT", nullable = true)
     private String textAnswerHint;
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)

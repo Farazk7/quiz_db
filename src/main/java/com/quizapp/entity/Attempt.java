@@ -15,6 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class Attempt {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,14 +27,18 @@ public class Attempt {
     private Quiz quiz;
 
     @Column(nullable = false)
+    @Builder.Default
     private Integer totalPoints = 0;
 
     @Column(nullable = false)
+    @Builder.Default
     private Integer score = 0;
 
     @Column(nullable = false, updatable = false)
+    @Builder.Default
     private Instant submittedAt = Instant.now();
 
     @OneToMany(mappedBy = "attempt", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<Answer> answers = new ArrayList<>();
 }
