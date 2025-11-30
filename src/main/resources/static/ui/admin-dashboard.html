@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f3f5fc;
+        }
+
+        .container {
+            width: 400px;
+            margin: 120px auto;
+            padding: 25px;
+            background: white;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0px 4px 15px rgba(0,0,0,0.15);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 20px;
+            background: #4A4DE7;
+            border: none;
+            color: white;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #3639c7;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Admin Dashboard</h2>
+
+    <button onclick="window.location.href='/ui/create-quiz.html'">Create Quiz</button>
+
+    <button onclick="logout()">Logout</button>
+</div>
+
+<script>
+    // Redirect user to login page if no token present
+    if (!localStorage.getItem("token")) {
+        window.location.href = "/ui/login.html";
+    }
+
+    function logout() {
+        localStorage.removeItem("token");
+        window.location.href = "/ui/login.html";
+    }
+</script>
+
+</body>
+</html>

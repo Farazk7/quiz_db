@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Available Quizzes</title>
+</head>
+<body>
+<h2>Select a Quiz to Begin</h2>
+
+<div id="quizList"></div>
+
+<script>
+    async function loadQuizzes() {
+        const res = await fetch("/api/public/quizzes");
+        const quizzes = await res.json();
+
+        let html = "";
+        quizzes.forEach(q => {
+            html += `
+                <div style='padding:10px; margin:10px; border:1px solid #ccc;'>
+                    <h3>${q.title}</h3>
+                    <p>${q.description}</p>
+                    <button onclick="startQuiz(${q.id})">Start Quiz</button>
+                </div>
+            `;
+        });
+
+        document.getElementById("quizList").innerHTML = html;
+    }
+
+    function startQuiz(id) {
+        window.location.href = "/ui/take-quiz.html?quizId=" + id;
+    }
+
+    loadQuizzes();
+</script>
+
+</body>
+</html>

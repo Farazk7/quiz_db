@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/public/quizzes")
 @RequiredArgsConstructor
@@ -27,4 +29,10 @@ public class QuizController {
     public ResponseEntity<AttemptResponse> submitAttempt(@RequestBody AttemptRequest request) {
         return ResponseEntity.ok(attemptService.submitAttempt(request));
     }
+
+    @GetMapping
+    public ResponseEntity<List<QuizResponse>> getAllQuizzes() {
+        return ResponseEntity.ok(quizService.getAllQuizzes());
+    }
+
 }

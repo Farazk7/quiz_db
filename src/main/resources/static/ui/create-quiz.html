@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Quiz - Quiz App</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
+          rel="stylesheet"/>
+
+    <style>
+        body {
+            margin: 0;
+            background: #f4f7fb;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            margin-top: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border: 1px solid #bbb;
+            font-size: 15px;
+        }
+
+        .question-card {
+            background: #f7f9fc;
+            padding: 18px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 14px 20px;
+            background: #6e8efb;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            background: #5b7ce3;
+        }
+
+        .remove-btn {
+            background: #ff5757;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            color: white;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<script>
+    // BLOCK PAGE IF TOKEN MISSING
+    if (!localStorage.getItem("token")) {
+        window.location.href = "/ui/login.html";
+    }
+</script>
+
+<div class="container">
+    <h2>Create New Quiz</h2>
+
+    <label>Quiz Title</label>
+    <input type="text" id="quizTitle" placeholder="Enter quiz title">
+
+    <label>Description</label>
+    <input type="text" id="quizDesc" placeholder="Enter quiz description">
+
+    <h3>Questions</h3>
+
+    <div id="questionList"></div>
+
+    <button class="btn" onclick="addQuestion()">➕ Add Question</button>
+    <button class="btn" onclick="submitQuiz()" style="background:#28a745">✅ Submit Quiz</button>
+</div>
+
+
+<script>
+    let questionCounter = 0;
+
+    function addQuestion() {
+        questionCounter++;
+
+        const qHTML = `
+            <div class="question-card" id="q_${questionCounter}">
+                <h4>Question ${questionCounter}</h4>
+
+                <label>Question Text</label>
+                <input type="text" id="q_text_${questionCounter}" placeholder="Enter question">
+
+                <label>Points</label>
+                <input type="number" id="q_points_${questionCounter}" value="5">
+
+                <label>Question Type</label>
+                <select id="q_type_${questionCounter}" onchange="renderChoices(${questionCounter})">
+                    <option value="MCQ">MCQ</option>
+                    <option value="TRUE_FALSE">True/False</option>
+                    <option value="TEXT">Text</option>
+                </select>
+
+                <div id="choices_${questionCounter}"></div>
+
+                <button class="remove-btn" onclick="removeQuestion(${questionCounter})">Remove Question</button>
+            </div>
+        `;
+
+        document.getElementById("questionList").innerHTML += qHTML;
+        renderChoices(questionCounter);
+    }
+
+    function renderChoices(qId) {
+        const type = document.getElementById(`q_type_${qId}`).value;
+        const box = document.getElementById(`choices_${qId}`);
+
+        if (type === "TEXT") {
+            box.innerHTML = `<label>Correct Answer Keyword</label>
+                             <input type="text" id="q_textAnswer_${qId}" placeholder="Exact matching keyword">`;
+        }
+
+        if (type === "TRUE_FALSE") {
+            box.innerHTML = `
+                <label>Correct Option</label>
+                <select id="q_correct_${qId}">
+                    <option value="true">True</option>
+                    <option value="false">False</option>
+                </select>`;
+        }
+
+        if (type === "MCQ") {
+            box.innerHTML = `
+                <div id="mcq_box_${qId}">
+                    <label>MCQ Options</label>
+
+                    <input type="text" placeholder="Option 1" id="mcq_${qId}_1">
+                    <input type="text" placeholder="Option 2" id="mcq_${qId}_2">
+
+                    <label>Correct Option Number (1 or 2)</label>
+                    <input type="number" id="mcq_correct_${qId}" value="1">
+                </div>
+            `;
+        }
+    }
+
+    function removeQuestion(id) {
+        document.getElementById("q_" + id).remove();
+    }
+
+    async function submitQuiz() {
+        const title = document.getElementById("quizTitle").value.trim();
+        const desc = document.getElementById("quizDesc").value.trim();
+
+        if (!title) return alert("Please enter quiz title!");
+
+        const questions = [];
+        for (let i = 1; i <= questionCounter; i++) {
+            const card = document.getElementById(`q_${i}`);
+            if (!card) continue;
+
+            const text = document.getElementById(`q_text_${i}`).value;
+            const points = document.getElementById(`q_points_${i}`).value;
+            const type = document.getElementById(`q_type_${i}`).value;
+
+            let qObj = {
+                text: text,
+                points: Number(points),
+                type: type,
+                choices: []
+            };
+
+            if (type === "TEXT") {
+                qObj.textAnswerHint = document.getElementById(`q_textAnswer_${i}`).value;
+            }
+
+            if (type === "TRUE_FALSE") {
+                const correctVal = document.getElementById(`q_correct_${i}`).value;
+                qObj.choices = [
+                    { text: "True", correct: correctVal === "true" },
+                    { text: "False", correct: correctVal === "false" }
+                ];
+            }
+
+            if (type === "MCQ") {
+                const opt1 = document.getElementById(`mcq_${i}_1`).value;
+                const opt2 = document.getElementById(`mcq_${i}_2`).value;
+                const correctIndex = Number(document.getElementById(`mcq_correct_${i}`).value);
+
+                qObj.choices = [
+                    { text: opt1, correct: correctIndex === 1 },
+                    { text: opt2, correct: correctIndex === 2 }
+                ];
+            }
+
+            questions.push(qObj);
+        }
+
+        const payload = {
+            title: title,
+            description: desc,
+            questions: questions
+        };
+
+        const token = localStorage.getItem("token");
+
+        const res = await fetch("/api/admin/quizzes", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token
+            },
+            body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+            alert("Quiz Created Successfully!");
+            window.location.href = "/ui/admin-dashboard.html";
+        } else {
+            alert("Error creating quiz");
+        }
+    }
+</script>
+
+</body>
+</html>

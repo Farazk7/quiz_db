@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz Result</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"
+          rel="stylesheet"/>
+
+    <style>
+        body {
+            margin: 0;
+            background: #f4f7fb;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .score-box {
+            background: #6e8efb;
+            padding: 18px;
+            color: white;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            font-size: 20px;
+        }
+
+        .ans-card {
+            background: #f7f9fc;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+
+        .correct {
+            color: green;
+            font-weight: 600;
+        }
+
+        .wrong {
+            color: red;
+            font-weight: 600;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            background: #4A4DE7;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            border-radius: 10px;
+        }
+
+        .btn:hover {
+            background: #3b3ec7;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Quiz Result</h2>
+
+    <div id="scoreBox" class="score-box"></div>
+
+    <h3>Question-wise Breakdown</h3>
+
+    <div id="answersList"></div>
+
+    <button class="btn" onclick="window.location.href='/ui/login'">Back to Home</button>
+</div>
+
+<script>
+    const result = JSON.parse(localStorage.getItem("quizResult"));
+
+    if (!result) {
+        document.body.innerHTML = "<h2 style='text-align:center;color:red;'>No Result Found!</h2>";
+        throw new Error("No result found!");
+    }
+
+    document.getElementById("scoreBox").innerText =
+        `You scored ${result.score} out of ${result.totalPoints}`;
+
+    const answersDiv = document.getElementById("answersList");
+
+    result.answers.forEach(a => {
+        const div = document.createElement("div");
+        div.classList.add("ans-card");
+
+        div.innerHTML = `
+            <p><strong>Question ID:</strong> ${a.questionId}</p>
+            <p>Status: <span class="${a.correct ? "correct" : "wrong"}">
+                ${a.correct ? "Correct" : "Wrong"}
+            </span></p>
+            <p>Points Awarded: ${a.pointsAwarded}</p>
+        `;
+
+        answersDiv.appendChild(div);
+    });
+</script>
+
+</body>
+</html>

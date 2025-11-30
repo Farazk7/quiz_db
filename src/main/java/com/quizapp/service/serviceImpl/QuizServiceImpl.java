@@ -12,6 +12,7 @@ import com.quizapp.service.QuizService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
@@ -79,6 +80,15 @@ public class QuizServiceImpl implements QuizService {
                 .orElseThrow(() -> new ResourceNotFoundException("Quiz not found"));
 
         return mapToQuizResponse(quiz);
+    }
+
+    @Override
+    public List<QuizResponse> getAllQuizzes() {
+        List<Quiz> quizzes = quizRepository.findAll();
+
+        return quizzes.stream()
+                .map(this::mapToQuizResponse)
+                .collect(Collectors.toList());
     }
 
     private QuizResponse mapToQuizResponse(Quiz quiz) {

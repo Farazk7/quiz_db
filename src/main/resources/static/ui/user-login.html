@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Login</title>
+    <style>
+        body { margin: 0; background: #f4f7fb; font-family: Arial; }
+        .box {
+            width: 350px; margin: 120px auto; padding: 30px;
+            background: white; border-radius: 12px; text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+        input { width: 95%; padding: 12px; margin: 10px 0; border-radius: 6px; border: 1px solid #aaa; }
+        button { width: 100%; padding: 12px; border: none; background: #4A4DE7; color: white;
+            border-radius: 6px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h2>Quiz User Login</h2>
+
+    <input type="text" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Password" />
+
+    <button onclick="loginUser()">Login</button>
+
+    <p id="error" style="color:red;"></p>
+</div>
+
+<script>
+    async function loginUser() {
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        const res = await fetch("/api/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password })
+        });
+
+        if (res.ok) {
+            const data = await res.json();
+            localStorage.setItem("token", data.token);
+            window.location.href = "/ui/user-quiz-list.html";
+        } else {
+            document.getElementById("error").innerText = "Invalid Login";
+        }
+    }
+</script>
+
+</body>
+</html>
