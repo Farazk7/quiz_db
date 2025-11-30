@@ -1,219 +1,156 @@
 PLAN.md — Quiz Management System
-1. Introduction
 
-This document outlines the scope, architecture, and development plan for the Quiz Management System. The goal is to build a simple yet production-ready quiz platform with a Spring Boot backend, MySQL database, a minimal frontend, and cloud deployment. This file represents the thought process and planning before implementation.
+1. Introduction
+This document outlines the functional scope, architecture, and implementation strategy for the Quiz Management System, developed as part of the technical assessment.
+The objective is to build a production-ready, maintainable, and deployable solution within the given time constraints.
+The system provides an Admin Panel for quiz management and a Public Page for taking quizzes.
 
 2. Scope
+Admin :
+Secure login using JWT
+Create quizzes with multiple question types:
+i) MCQ
+ii) True/False
+iii) Text-based questions
+Manage quizzes (view/delete)
 
-The system allows:
+Users :
+Access public quiz pages
+Take a quiz without authentication
+Submit the attempt
+View the score/results
 
-Admin to create and manage quizzes and questions.
-
-Users to view and attempt quizzes.
-
-Result calculation after quiz submission.
-
-The solution will remain lightweight and focused due to assessment time constraints.
+The solution focuses on delivering all core, functional features required for evaluation.
 
 3. Assumptions
-
-Two user roles: ADMIN and USER.
-
-Simple username/password authentication using JWT.
-
-MySQL is used locally during development and hosted on Railway for deployment.
-
-Backend will deploy on Render.
-
-Frontend will be minimal HTML + JavaScript.
-
-A question belongs to one quiz only.
+Two roles exist: ADMIN (secured) and PUBLIC USER (anonymous).
+JWT authentication is used only for Admin routes.
+Only Admin creates quizzes; users simply attempt them.
+The frontend is deliberately minimal to focus on functionality and backend robustness.
+MySQL is used locally and deployed via Railway.
+Backend is deployed on Render.
 
 4. Out of Scope
 
-No timer for quizzes
+The following features were intentionally excluded due to time constraints and assessment guidelines:
+i) Quiz timers or countdown
+ii) Leaderboards
+iii) Multi-attempt tracking
+iv) CSV/bulk upload
+v) Email/OTP verification
+vi) Analytics or admin reports
+vii) Rich UI using React/Angular
+viii) User registration or profiles
+ix) Unit Testing using Junit and Mockito
 
-No leaderboard
-
-No multiple attempt history
-
-No email notifications
-
-No bulk upload
-
-No detailed analytics
+These can be added in future, but are not essential for the core working system.
 
 5. Functional Requirements
-   Admin Features
-
-Create quiz
-
-Update quiz
-
-Delete quiz
-
-Add questions to quiz
-
-View all quizzes
-
-User Features
-
-View available quizzes
-
-Attempt a quiz
-
-Submit answers
-
-Receive score
-
-Authentication
-
-Register new user
-
-Login to generate JWT token
-
-Access control based on roles
+Admin Requirements :
+i) Authenticate using email/password
+ii) Create quizzes with multiple questions
+iii) Choose question type
+iv) Set correct answers
+v) View all quizzes
+vi) Delete quizzes
+vii) Public Requirements
+viii) Load quiz data from backend
+ix) Attempt quiz without login
+x) Submit answers
+xi) Receive and view result immediately
+xii) Security Requirements
+xiii) JWT-based authentication
+xiv) Protected admin endpoints
+xv) Public APIs for loading and submitting quiz attempts
 
 6. Non-Functional Requirements
-
-Clean layered architecture
-
-Secure endpoints using JWT
-
-Proper error and exception handling
-
-Easy to deploy
-
-Minimal configuration needed for evaluators
-
-Readable code and structured packages
+i) Clean layered architecture (Controller → Service → Repository)
+ii) Secure admin operations
+iii) Clear error handling and validations
+iv) Easily deployable backend
+v) Simple, understandable codebase for reviewers
+vi) Minimal dependencies
+vii) Fully working end-to-end flow
 
 7. Architecture Overview
+Backend :
+Built using Spring Boot with a layered architecture:
+i) Controller Layer
+Exposes REST endpoints for authentication, quiz management, and quiz attempts.
+ii) Service Layer
+Encapsulates business logic such as quiz creation, scoring, validations, and token generation.
+iii) Repository Layer
+Uses Spring Data JPA to communicate with MySQL.
+iv) Security Layer
+v) JWT token generation
+vi) Custom filter for authentication
+vii) Role-based access for Admin APIs
 
-A three-layered Spring Boot architecture:
+Frontend
+i) Pure HTML + CSS + JavaScript
+ii) Uses fetch() to call backend APIs
+iii) Lightweight, easy to deploy with no build tools required
 
-Controller Layer
-
-Handles REST APIs for quizzes, questions, and authentication.
-
-Service Layer
-
-Contains business logic such as quiz creation, question operations, and scoring.
-
-Repository Layer
-
-Spring Data JPA repositories interacting with MySQL.
-
-8. Database Schema
-   User
-
-id (Long) — Primary Key
-username (String) — Unique
-password (String) — Encrypted
-role (String) — ADMIN / USER
-
-Quiz
-
-id (Long) — Primary Key
-title (String) — Quiz name
-description (String) — Optional details
-
-Question
-
-id (Long) — Primary Key
-quiz_id (Long) — FK to Quiz
-question_text (String)
-optionA (String)
-optionB (String)
-optionC (String)
-optionD (String)
-correct_option (String: A/B/C/D)
-
-9. Technology Stack
-
+8. Technology Stack
 Java 17
-
-Spring Boot 3.5.x
-
-Spring Web
-
-Spring JPA
-
-Spring Security (JWT)
-
+Spring Boot 3.x
+Spring Web, Spring Security, Spring Data JPA
 MySQL
+HTML, CSS, JavaScript
+Render for backend deployment
+Railway for MySQL hosting
+GitHub for version control (4+ commits mandatory)
 
-HTML + JavaScript
+9. Development Plan
 
-Render (backend deployment)
+Phase 1 – Project Setup
+Create Spring Boot project
+Configure dependencies
+Define entities, repositories
+Write initial PLAN.md
+Commit #1
 
-Railway (MySQL hosting)
+Phase 2 – Backend Features
+Implement Admin authentication (JWT)
+Implement quiz creation
+Add question & choice handling
+Implement public quiz fetch
+Implement attempt evaluation logic
+Add DTOs and validations
+Commit #2
 
-10. Development Plan (Recording Flow)
-    Phase 1 — Setup (First 30 mins)
+Phase 3 – Security
+Configure JWT filter
+Protect admin endpoints
+Test admin flows
+Commit #3
 
-Create project using Spring Initializr
-
-Configure application.properties
-
-Create folder structure
-
-Create entities and repositories
-
-Create PLAN.md
-
-First Git commit
-
-Phase 2 — Core Logic
-
-Implement services
-
-Implement controllers
-
-Configure JWT authentication
-
-Add DTOs
-
-Add global exception handling
-
-Second Git commit
-
-Phase 3 — Frontend + Integration
-
-Create simple HTML pages
-
+Phase 4 – Frontend
+Build admin login page
+Build admin dashboard
+Build create quiz page
+Build quiz attempt page
+Build quiz result page
 Integrate backend APIs
+Test end-to-end flow
+Commit #4
 
-Test complete user flow
-
-Third Git commit
-
-Phase 4 — Deployment
-
+Phase 5 – Deployment
 Host database on Railway
-
 Deploy backend on Render
+Add environment variables
+Test deployed version
 
-Test deployed system
-
-Final commit
-
-11. Enhancements (If More Time Available)
-
-React-based UI
-
-Quiz history & analytics
-
-Leaderboards
-
+10. Future Improvements (If More Time Was Available)
+Modern UI using React
 Timed quizzes
+Reporting and analytics
+Question randomization
+User registrations and multiple attempts
+Leaderboards
+CSV upload for bulk question creation
+Better admin dashboard with charts
 
-Bulk CSV upload
-
-Email notifications
-
-Admin dashboard
-
-12. Conclusion
-
-This plan ensures a clear, simple, and evaluatable Quiz Management System with proper architecture, clean code, and smooth deployment. The project will be built in small, incremental phases for clarity and maintainability.
+11. Conclusion
+This plan provides a structured approach to delivering a complete, functional, and production-ready Quiz Management System.
+The focus is on correctness, stability, deployment readiness, and clean engineering practices—ensuring evaluators can easily run, test, and understand the system.
